@@ -1,0 +1,29 @@
+<article id="task-{{ task.id }}" class="task">
+  <form class="inline-form"
+    hx-post="/tasks/{{ task.id }}/edit"
+    hx-target="#task-{{ task.id }}"
+    hx-swap="outerHTML"
+  >
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <label for="edit-title-{{ task.id }}">Title</label>
+    <input id="edit-title-{{ task.id }}" name="title" value="{{ task.title }}" required>
+
+    <label for="edit-description-{{ task.id }}">Description</label>
+    <textarea id="edit-description-{{ task.id }}" name="description">{{ task.description or '' }}</textarea>
+
+    <div class="task-actions">
+      <button class="btn-primary" type="submit">Save</button>
+      <button
+        class="btn-ghost"
+        type="button"
+        hx-get="/"
+        hx-select="#task-{{ task.id }}"
+        hx-target="#task-{{ task.id }}"
+        hx-swap="outerHTML"
+      >Cancel</button>
+    </div>
+  </form>
+</article>

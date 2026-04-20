@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HTMX CRUD Tasks</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #131a2a;
+        --panel-2: #1a2336;
+        --text: #e8edf6;
+        --muted: #98a2b3;
+        --accent: #4f8cff;
+        --danger: #ef4444;
+        --border: #26324a;
+        --success: #22c55e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        background: linear-gradient(180deg, #0b1020, #111827);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 32px 16px 56px;
+      }
+      .hero { margin-bottom: 24px; }
+      h1 { margin: 0 0 8px; font-size: 2rem; }
+      p { color: var(--muted); }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 860px) {
+        .grid { grid-template-columns: 340px 1fr; align-items: start; }
+      }
+      .card {
+        background: rgba(19, 26, 42, 0.95);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      }
+      label { display: block; margin-bottom: 8px; font-weight: 600; }
+      input, textarea {
+        width: 100%;
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--panel-2);
+        color: var(--text);
+        padding: 12px 14px;
+        font: inherit;
+      }
+      textarea { min-height: 100px; resize: vertical; }
+      button {
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .btn-primary { background: var(--accent); color: white; }
+      .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+      .btn-danger { background: var(--danger); color: white; }
+      .tasks { display: grid; gap: 12px; }
+      .task {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        border-radius: 14px;
+        padding: 14px;
+      }
+      .task.done { opacity: .75; }
+      .task.done h3 { text-decoration: line-through; color: #b5c2d8; }
+      .task-head, .task-actions { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+      .task-actions { justify-content: flex-end; flex-wrap: wrap; margin-top: 12px; }
+      .meta { color: var(--muted); font-size: .9rem; }
+      .status { font-size: .85rem; font-weight: 700; color: var(--success); }
+      .status.pending { color: #f59e0b; }
+      .error {
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(239, 68, 68, .15);
+        border: 1px solid rgba(239, 68, 68, .4);
+        color: #fecaca;
+      }
+      .empty { color: var(--muted); text-align: center; padding: 24px 12px; border: 1px dashed var(--border); border-radius: 14px; }
+      .inline-form { display: grid; gap: 10px; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <h1>Simple HTMX CRUD app</h1>
+        <p>Use this small task manager to test Git push, Render Blueprint deploys, and server-side HTML updates.</p>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Add task</h2>
+          <p>Create an item and watch the list update with HTMX.</p>
+          <form
+            hx-post="/tasks"
+            hx-target="#task-list"
+            hx-swap="innerHTML"
+            hx-on::after-request="if(event.detail.successful) this.reset()"
+          >
+            <label for="title">Title</label>
+            <input id="title" name="title" placeholder="Ship first Render test" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Optional notes"></textarea>
+
+            <button class="btn-primary" type="submit">Create task</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="task-head">
+            <h2>Tasks</h2>
+            <span class="meta">Server-rendered + HTMX</span>
+          </div>
+          <div id="task-list">
+            {% include 'partials/task_list.html' %}
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

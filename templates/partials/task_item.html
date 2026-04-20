@@ -1,0 +1,41 @@
+<article id="task-{{ task.id }}" class="task {% if task.done %}done{% endif %}">
+  <div class="task-head">
+    <div>
+      <h3>{{ task.title }}</h3>
+      <div class="meta">Created {{ task.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+    </div>
+    <div class="status {% if not task.done %}pending{% endif %}">
+      {{ 'Done' if task.done else 'Pending' }}
+    </div>
+  </div>
+
+  {% if task.description %}
+    <p>{{ task.description }}</p>
+  {% endif %}
+
+  <div class="task-actions">
+    <button
+      class="btn-ghost"
+      hx-post="/tasks/{{ task.id }}/toggle"
+      hx-target="#task-{{ task.id }}"
+      hx-swap="outerHTML"
+    >
+      {{ 'Mark pending' if task.done else 'Mark done' }}
+    </button>
+
+    <button
+      class="btn-ghost"
+      hx-get="/tasks/{{ task.id }}/edit"
+      hx-target="#task-{{ task.id }}"
+      hx-swap="outerHTML"
+    >Edit</button>
+
+    <button
+      class="btn-danger"
+      hx-post="/tasks/{{ task.id }}/delete"
+      hx-target="#task-list"
+      hx-swap="innerHTML"
+      hx-confirm="Delete this task?"
+    >Delete</button>
+  </div>
+</article>

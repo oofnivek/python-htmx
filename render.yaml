@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: render-htmx-crud
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DATABASE_URL
+        fromDatabase:
+          name: render-htmx-crud-db
+          property: connectionString
+
+databases:
+  - name: render-htmx-crud-db
+    databaseName: tasksdb
+    user: tasksuser
